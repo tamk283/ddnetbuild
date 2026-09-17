@@ -48,7 +48,7 @@ jobs:
       - name: Build C++ (CMake)
         run: |
           chmod +x scripts/android/cmake_android.sh
-          ./scripts/android/cmake_android.sh
+          ./scripts/android/cmake_android.sh arm64 "DDNet-kinetix" "com.ddnet.kinetix" Release build_arch
 
       - name: Copy Android files
         run: |
