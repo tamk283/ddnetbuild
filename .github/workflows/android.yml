@@ -55,6 +55,16 @@ jobs:
           rm -rf ddnet-libs
           git clone --depth 1 https://github.com/ddnet/ddnet-libs.git ddnet-libs
 
+      - name: Fix Yoga
+        run: |
+          if [ ! -f src/engine/external/yoga/debug/AssertFatal.h ]; then
+            echo "Yoga missing, cloning..."
+            rm -rf src/engine/external/yoga
+            git clone --depth 1 https://github.com/facebook/yoga.git src/engine/external/yoga
+          else
+            echo "Yoga found, skipping clone."
+          fi
+
       - name: Build C++ (CMake)
         run: |
           chmod +x scripts/android/cmake_android.sh
