@@ -37,8 +37,8 @@ jobs:
           accept-android-sdk-licenses: 'true'
           packages: 'platform-tools build-tools;34.0.0 platforms;android-34'
 
-      - name: Install Ninja and CMake
-        run: sudo apt-get install -y ninja-build cmake
+      - name: Install Ninja, CMake and glslang-tools
+        run: sudo apt-get install -y ninja-build cmake glslang-tools
 
       - name: Download Android SDK
         run: |
