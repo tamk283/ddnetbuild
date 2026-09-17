@@ -50,6 +50,10 @@ jobs:
           mkdir -p cmake
           touch cmake/checksummed_extra.txt
 
+      - name: Clone ddnet-libs
+        run: |
+          git clone --depth 1 https://github.com/ddnet/ddnet-libs.git ../ddnet-libs
+
       - name: Build C++ (CMake)
         run: |
           chmod +x scripts/android/cmake_android.sh
