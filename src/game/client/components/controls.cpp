@@ -619,7 +619,7 @@ int CControls::SnapInput(int *pData)
         // (AimBot + Laser Unfreeze run in OnUpdate before SnapInput, so their
         // flags are already set when BAF runs here — BAF checks !m_LaserUnfreezeAimActive
         // before overwriting, giving Laser Unfreeze/AimBot priority on the aim channel.)
-        GameClient()->m_BasicAvoidFreeze.ApplyOverride();
+        GameClient()->m_AvoidFreeze.ApplyOverride();
 
         // Laser unfreeze silent aim — highest priority (consumes flag set by
         // Laser Unfreeze, AimBot, or BAF above).
