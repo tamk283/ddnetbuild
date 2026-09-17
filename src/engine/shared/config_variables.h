@@ -1049,7 +1049,6 @@ MACRO_CONFIG_INT(KxAtkMain, kx_atk_main, 0, 0, 1, CFGFLAG_CLIENT | CFGFLAG_SAVE,
 MACRO_CONFIG_INT(KxAutoMain, kx_auto_main, 0, 0, 1, CFGFLAG_CLIENT | CFGFLAG_SAVE, "Auto-set main to active dummy")
 MACRO_CONFIG_INT(KxHammer, kx_hammer, 1, 0, 1, CFGFLAG_CLIENT | CFGFLAG_SAVE, "Auto hammer")
 MACRO_CONFIG_INT(KxPfSimulatePlayers, kx_pf_simulate_players, 1, 0, 1, CFGFLAG_CLIENT | CFGFLAG_SAVE, "Simulate players in pathfinder")
-MACRO_CONFIG_INT(KxAvoidFreeze, kx_avoid_freeze, 1, 0, 1, CFGFLAG_CLIENT | CFGFLAG_SAVE, "Avoid freeze tiles")
 MACRO_CONFIG_INT(KxPfHook, kx_pf_hook, 0, 0, 1, CFGFLAG_CLIENT | CFGFLAG_SAVE, "Pathfinder hook to walls")
 MACRO_CONFIG_INT(KxKinodynamic, kx_kinodynamic, 0, 0, 1, CFGFLAG_CLIENT | CFGFLAG_SAVE, "Enable Kinodynamic A* movement")
 MACRO_CONFIG_INT(KxStandOnX, kx_stand_on_x, 0, 0, 1, CFGFLAG_CLIENT | CFGFLAG_SAVE, "Stand only on X axis")
