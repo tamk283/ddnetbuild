@@ -61,6 +61,7 @@ jobs:
             echo "Yoga missing, cloning..."
             rm -rf src/engine/external/yoga
             git clone --depth 1 https://github.com/facebook/yoga.git src/engine/external/yoga
+            rm -rf src/engine/external/yoga/capture src/engine/external/yoga/benchmark
           else
             echo "Yoga found, skipping clone."
           fi
