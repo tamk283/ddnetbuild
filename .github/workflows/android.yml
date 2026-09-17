@@ -52,7 +52,7 @@ jobs:
 
       - name: Clone ddnet-libs
         run: |
-          git clone --depth 1 https://github.com/ddnet/ddnet-libs.git ../ddnet-libs
+          git clone --depth 1 https://github.com/ddnet/ddnet-libs.git ddnet-libs
 
       - name: Build C++ (CMake)
         run: |
