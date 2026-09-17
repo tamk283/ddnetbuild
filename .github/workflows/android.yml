@@ -45,6 +45,11 @@ jobs:
           chmod +x scripts/android/download_android_sdk.sh
           ./scripts/android/download_android_sdk.sh
 
+      - name: Create checksummed_extra.txt
+        run: |
+          mkdir -p cmake
+          touch cmake/checksummed_extra.txt
+
       - name: Build C++ (CMake)
         run: |
           chmod +x scripts/android/cmake_android.sh
