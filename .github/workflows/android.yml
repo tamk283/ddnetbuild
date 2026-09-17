@@ -58,12 +58,13 @@ jobs:
       - name: Fix Yoga
         run: |
           if [ ! -f src/engine/external/yoga/debug/AssertFatal.h ]; then
-            echo "Yoga missing, cloning..."
+            echo "Yoga missing debug/, fetching from Facebook..."
             rm -rf src/engine/external/yoga
-            git clone --depth 1 https://github.com/facebook/yoga.git src/engine/external/yoga
-            rm -rf src/engine/external/yoga/capture src/engine/external/yoga/benchmark
+            git clone --depth 1 https://github.com/facebook/yoga.git /tmp/fb-yoga
+            mv /tmp/fb-yoga/yoga src/engine/external/yoga
+            rm -rf /tmp/fb-yoga
           else
-            echo "Yoga found, skipping clone."
+            echo "Yoga debug/ found, skipping."
           fi
 
       - name: Build C++ (CMake)

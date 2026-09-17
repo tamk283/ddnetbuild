@@ -884,7 +884,7 @@ endif()
 # Bundled as source under src/engine/external/yoga/ . Includes use
 # <yoga/Yoga.h>, so the include path is the parent of the yoga/ folder.
 file(GLOB_RECURSE DEP_YOGA_SRC CONFIGURE_DEPENDS src/engine/external/yoga/*.cpp)
-list(FILTER DEP_YOGA_SRC EXCLUDE REGEX "/yoga/(capture|benchmark)/")
+list(FILTER DEP_YOGA_SRC EXCLUDE REGEX "/yoga/(capture|benchmark|fuzz|java|gentest|tests|test|unit_tests|javascript|website)/")
 add_library(yogacore EXCLUDE_FROM_ALL OBJECT ${DEP_YOGA_SRC})
 target_include_directories(yogacore PUBLIC ${CMAKE_SOURCE_DIR}/src/engine/external)
 # Yoga is C++20 (uses concepts, std::bit_width, etc.) — must match DDNet's
