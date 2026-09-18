@@ -67,6 +67,11 @@ jobs:
             echo "Yoga debug/ found, skipping."
           fi
 
+      - name: Create keystore
+        run: |
+          mkdir -p ~/.android
+          keytool -genkeypair -v -keystore ~/.android/debug.keystore -keyalg RSA -keysize 2048 -validity 10000 -alias androiddebugkey -storepass android -keypass android -dname "CN=Android Debug,O=Android,C=US"
+
       - name: Build C++ (CMake)
         run: |
           chmod +x scripts/android/cmake_android.sh
@@ -75,11 +80,6 @@ jobs:
       - name: Copy Android files
         run: |
           cp -r scripts/android/files/* .
-
-      - name: Create keystore
-        run: |
-          mkdir -p ~/.android
-          keytool -genkeypair -v -keystore ~/.android/debug.keystore -keyalg RSA -keysize 2048 -validity 10000 -alias androiddebugkey -storepass android -keypass android -dname "CN=Android Debug,O=Android,C=US"
 
       - name: Build APK (Gradle)
         run: |
