@@ -238,6 +238,7 @@ void CBotNet::ConSaveSettings(IConsole::IResult *pResult, void *pUserData)
 		"kx_kino_candidates", "kx_kino_ticks", "kx_kino_hook_angles",
 		"kx_kino_cache_ticks", "kx_kino_show_path", "kx_kino_show_field", "kx_kino_aggressive",
 		"kx_show_trajectory",
+		"kx_zoom_hack",
 	};
 
 	int count = sizeof(Cvars) / sizeof(Cvars[0]);

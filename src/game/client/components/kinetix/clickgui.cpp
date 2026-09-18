@@ -289,6 +289,7 @@ static SRow g_FunctionsRows[] = {
         {ERowType::DoubleButton, "Save Settings", "Load Settings", false, false, 0, 0, 0, 0, nullptr, nullptr, nullptr, nullptr, 0, 0, nullptr, 0},
         // v1.56.186: Copy Moves Latency — staggered input replay delay for inactive dummies.
         {ERowType::Expandable, "Copy Moves Latency", nullptr, false, false, 0, 0, 0, 0, nullptr, nullptr, nullptr, nullptr, 0, 0, g_CopyMovesLatencyChildren, 1},
+        {ERowType::Toggle, "Zoom Hack", nullptr, false, false, 0, 0, 0, 0, nullptr, nullptr, nullptr, nullptr, 0, 0, nullptr, 0},
 };
 
 // ---------- Advanced panel (5) ----------
@@ -2159,6 +2160,8 @@ void CClickGui::OnRender()
 					row.value = (float)g_Config.m_KxHookRideRadius;
 				else if(str_comp(row.pName, "Jet Ride") == 0)
 					row.on = g_Config.m_KxJetRide != 0;
+				else if(str_comp(row.pName, "Zoom Hack") == 0)
+					row.on = g_Config.m_KxZoomHack != 0;
 				else if(str_comp(row.pName, "Jet Ride Radius") == 0)
 					row.value = (float)g_Config.m_KxJetRideRadius;
                                 // Functions → Copy Moves Filter expandable is master toggle.
@@ -2979,6 +2982,7 @@ if(str_comp(row.pName, "Smart dummy switch") == 0 && !BindsChildVisible(row.pChi
 					else if(str_comp(row.pName, "Balance Bot") == 0) pCmd = "toggle kx_balance_bot 1 0";
 					else if(str_comp(row.pName, "Hook Ride") == 0) pCmd = "toggle kx_hook_ride 1 0";
 					else if(str_comp(row.pName, "Jet Ride") == 0) pCmd = "toggle kx_jet_ride 1 0";
+					else if(str_comp(row.pName, "Zoom Hack") == 0) pCmd = "toggle kx_zoom_hack 1 0";
 				else if(str_comp(row.pName, "Balance Bot") == 0) pCmd = "toggle kx_balance_bot 1 0";
 				else if(str_comp(row.pName, "Hook Ride") == 0) pCmd = "toggle kx_hook_ride 1 0";
 				else if(str_comp(row.pName, "Jet Ride") == 0) pCmd = "toggle kx_jet_ride 1 0";
@@ -4034,6 +4038,8 @@ void CClickGui::HandleMouseDown(vec2 mousePos)
 						g_Config.m_KxHookRide = pTarget->on ? 1 : 0;
 					else if(str_comp(pTarget->pName, "Jet Ride") == 0)
 						g_Config.m_KxJetRide = pTarget->on ? 1 : 0;
+					else if(str_comp(pTarget->pName, "Zoom Hack") == 0)
+						g_Config.m_KxZoomHack = pTarget->on ? 1 : 0;
                                         // v1.56.83: AimBot/TriggerBot expandable master toggles
                                         else if(str_comp(pTarget->pName, "AimBot") == 0)
                                                 g_Config.m_KxAimBot = pTarget->on;
@@ -5651,6 +5657,7 @@ void CClickGui::ApplyInputCommit(void *pRowVoid)
                 else if(str_comp(pRow->pName, "Balance Bot") == 0) pCmd = "toggle kx_balance_bot 1 0";
                 else if(str_comp(pRow->pName, "Hook Ride") == 0) pCmd = "toggle kx_hook_ride 1 0";
                 else if(str_comp(pRow->pName, "Jet Ride") == 0) pCmd = "toggle kx_jet_ride 1 0";
+                else if(str_comp(pRow->pName, "Zoom Hack") == 0) pCmd = "toggle kx_zoom_hack 1 0";
                 else if(str_comp(pRow->pName, "Record") == 0) pCmd = "toggle kx_tas_record 1 0";
                 else if(str_comp(pRow->pName, "Pause") == 0) pCmd = "toggle kx_tas_pause 1 0";
                 else if(str_comp(pRow->pName, "Rewind") == 0) pCmd = "kx_tas_rewind";

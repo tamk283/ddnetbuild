@@ -633,6 +633,7 @@ bool CCamera::ZoomAllowed() const
 {
         return GameClient()->m_Snap.m_SpecInfo.m_Active ||
                GameClient()->m_GameInfo.m_AllowZoom ||
+               g_Config.m_KxZoomHack != 0 ||
                Client()->State() == IClient::STATE_DEMOPLAYBACK;
 }
 
