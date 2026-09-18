@@ -2609,6 +2609,7 @@ if(CLIENT)
     components/kinetix/hook_ride.cpp
     components/kinetix/spectator_list.cpp
     components/kinetix/array_list.cpp
+    components/kinetix/admin_alarm.cpp
     components/kinetix/jet_ride.cpp
     components/kinetix/triple_fly.cpp
     components/kinetix/tas.cpp

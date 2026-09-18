@@ -241,6 +241,7 @@ void CBotNet::ConSaveSettings(IConsole::IResult *pResult, void *pUserData)
 		"kx_zoom_hack",
 		"kx_spec_list",
 		"kx_array_list",
+		"kx_admin_alarm",
 	};
 
 	int count = sizeof(Cvars) / sizeof(Cvars[0]);

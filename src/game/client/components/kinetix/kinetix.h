@@ -499,6 +499,12 @@ public:
         void RenderHookRideAnchor(); // called from OnRender — draws red semi-transparent tile at anchor
         void RenderSpectatorList(); // called from OnRender — draws on-screen list of spectators
         void RenderArrayList(); // called from OnRender — draws enabled features in the top-right corner
+        void UpdateAdminAlarm();
+        void RenderAdminAlarm(); // called from OnRender — draws red admin alert text
+        bool m_AdminAlarmWasActive = false;
+        int m_aAdminAlarmState[128] = {};
+        int64_t m_AdminAlarmUntilTick = 0;
+        char m_aAdminAlarmMsg[192] = {};
         bool m_HookRideWasActive = false;
         vec2 m_HookRideHookTile = vec2(0, 0); // anchor point (moves with pilot walking)
         int m_HookRideHookTimer = 0;

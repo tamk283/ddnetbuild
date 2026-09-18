@@ -374,6 +374,8 @@ void CBotNet::OnUpdate()
         UpdateHookRide();
         UpdateJetRide();
 
+        UpdateAdminAlarm();
+
         UpdatePfTileEditor();
 
         CGameClient *pGame = GameClient();
@@ -484,6 +486,9 @@ void CBotNet::OnRender()
 
         // ArrayList — enabled features in the top-right corner.
         RenderArrayList();
+
+        // AdminAlarm — red alert text for new admins.
+        RenderAdminAlarm();
 
         if(!g_Config.m_KxKinodynamic)
                 return;
