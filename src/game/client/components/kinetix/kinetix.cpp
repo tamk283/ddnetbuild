@@ -479,7 +479,11 @@ void CBotNet::OnRender()
         // HookRide — render red tile at anchor.
         RenderHookRideAnchor();
 
-        // SpectatorList — on-screen list of spectators.\n        RenderSpectatorList();\n\n        // ArrayList — enabled features in the top-right corner.\n        RenderArrayList();
+        // SpectatorList — on-screen list of spectators.
+        RenderSpectatorList();
+
+        // ArrayList — enabled features in the top-right corner.
+        RenderArrayList();
 
         if(!g_Config.m_KxKinodynamic)
                 return;
