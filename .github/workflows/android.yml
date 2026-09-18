@@ -77,15 +77,6 @@ jobs:
           chmod +x scripts/android/cmake_android.sh
           ./scripts/android/cmake_android.sh arm64 "DDNet-kinetix" "com.ddnet.kinetix" Release build_arch
 
-      - name: Copy Android files
-        run: |
-          cp -r scripts/android/files/* .
-
-      - name: Build APK (Gradle)
-        run: |
-          chmod +x gradlew
-          ./gradlew assembleRelease
-
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
