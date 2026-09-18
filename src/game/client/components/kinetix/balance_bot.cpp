@@ -7,9 +7,9 @@
 #include <base/vmath.h>
 #include <base/math.h>
 
-// BalanceBot: active dummy balances on the head of the nearest player.
-// Finds nearest non-frozen player within radius, moves to match their X,
-// jumps if below their head level. No hook, no fire — pure balance.
+// BalanceBot: the nearest connected dummy tries to stand on the head of the
+// nearest player. The dummy hooks onto the target — the grabbed hook follows
+// the target — jumps and walks to climb onto the head and stay centered.
 
 void CBotNet::UpdateBalanceBot()
 {
@@ -26,6 +26,17 @@ void CBotNet::UpdateBalanceBot()
 	}
 	else if(!enabled && m_BalanceBotWasActive)
 	{
+		// Reset every controlled dummy.
+		for(int D = 0; D < MAX_DUMMIES; D++)
+		{
+			if(D == g_Config.m_ClDummy || (D != 0 && !Client()->DummyConnected(D)))
+				continue;
+			CNetObj_PlayerInput *pInput = &pGame->m_aDummyInput[D];
+			pInput->m_Hook = 0;
+			pInput->m_Jump = 0;
+			pInput->m_Direction = 0;
+			pGame->m_Controls.m_aInputData[D] = *pInput;
+		}
 		m_BalanceBotWasActive = false;
 		m_BalanceBotTargetId = -1;
 		return;
@@ -37,23 +48,45 @@ void CBotNet::UpdateBalanceBot()
 	if(!pGame->m_Snap.m_pLocalInfo)
 		return;
 
-	int LocalId = pGame->m_Snap.m_LocalClientId;
-	if(LocalId < 0)
+	const int activeD = g_Config.m_ClDummy;
+	const vec2 pilotPos = pGame->m_PredictedChar.m_Pos;
+
+	// ── Nearest connected dummy is the balance bot ──
+	int botD = -1;
+	float nearestBotDistSq = 1e18f;
+	vec2 botPos = vec2(0, 0);
+	for(int D = 0; D < MAX_DUMMIES; D++)
+	{
+		if(D == activeD)
+			continue;
+		if(D != 0 && !Client()->DummyConnected(D))
+			continue;
+		const int cid = pGame->m_aLocalIds[D];
+		if(cid < 0 || cid >= 128)
+			continue;
+		if(!pGame->m_aClients[cid].m_Active)
+			continue;
+		const vec2 dPos = pGame->m_aClients[cid].m_Predicted.m_Pos;
+		const float dsq = length_squared(dPos - pilotPos);
+		if(dsq < nearestBotDistSq)
+		{
+			nearestBotDistSq = dsq;
+			botD = D;
+			botPos = dPos;
+		}
+	}
+
+	if(botD < 0)
 		return;
+	const int botCid = pGame->m_aLocalIds[botD];
 
-	CCharacter *pLocalChar = pGame->m_PredictedWorld.GetCharacterById(LocalId);
-	if(!pLocalChar)
-		return;
-
-	vec2 myPos = pLocalChar->Core()->m_Pos;
-
+	// ── Nearest player to the bot is the balance target ──
+	const float maxR = (float)g_Config.m_KxBalanceBotRadius;
 	int bestTarget = -1;
-	float bestDistSq = 1e18f;
-	float maxR = (float)g_Config.m_KxBalanceBotRadius;
-
+	float bestDistSq = maxR * maxR;
 	for(int i = 0; i < 128; i++)
 	{
-		if(i == LocalId)
+		if(i == botCid)
 			continue;
 		if(!pGame->m_aClients[i].m_Active)
 			continue;
@@ -61,12 +94,8 @@ void CBotNet::UpdateBalanceBot()
 			continue;
 		if(pGame->m_aClients[i].m_FreezeEnd > 0)
 			continue;
-
-		vec2 tPos = pGame->m_aClients[i].m_Predicted.m_Pos;
-		float dSq = length_squared(tPos - myPos);
-		if(dSq > maxR * maxR)
-			continue;
-
+		const vec2 tPos = pGame->m_aClients[i].m_Predicted.m_Pos;
+		const float dSq = length_squared(tPos - botPos);
 		if(dSq < bestDistSq)
 		{
 			bestDistSq = dSq;
@@ -76,26 +105,46 @@ void CBotNet::UpdateBalanceBot()
 
 	m_BalanceBotTargetId = bestTarget;
 	if(bestTarget < 0)
+	{
+		// No target in range: stand still, release everything.
+		CNetObj_PlayerInput *pReset = &pGame->m_aDummyInput[botD];
+		pReset->m_Hook = 0;
+		pReset->m_Jump = 0;
+		pReset->m_Direction = 0;
+		pGame->m_Controls.m_aInputData[botD] = *pReset;
 		return;
+	}
 
-	vec2 targetPos = pGame->m_aClients[bestTarget].m_Predicted.m_Pos;
+	const vec2 targetPos = pGame->m_aClients[bestTarget].m_Predicted.m_Pos;
+	const float headY = targetPos.y - CCharacterCore::PhysicalSize();
+	const float dx = targetPos.x - botPos.x;
+	const float dist = length(targetPos - botPos);
 
-	float dx = targetPos.x - myPos.x;
-	float physSize = CCharacterCore::PhysicalSize();
-	float headY = targetPos.y - physSize;
+	CNetObj_PlayerInput *pInput = &pGame->m_aDummyInput[botD];
 
-	CNetObj_PlayerInput *pInput = &pGame->m_Controls.m_aInputData[g_Config.m_ClDummy];
-
+	// ── Horizontal balance: walk to stay centered over the target ──
 	if(std::abs(dx) > 4.0f)
 		pInput->m_Direction = (dx > 0) ? 1 : -1;
 	else
 		pInput->m_Direction = 0;
 
-	if(myPos.y > headY - 2.0f)
+	// ── Below head level: jump to climb up ──
+	if(botPos.y > headY + 6.0f && std::abs(dx) < 40.0f)
 		pInput->m_Jump = 1;
 	else
 		pInput->m_Jump = 0;
 
-	pInput->m_Hook = 0;
-	pInput->m_PlayerFlags |= 1;
+	// ── Hook onto the target: the grab follows the target and pulls the bot
+	// onto the head; DDNet auto-releases the hook, so it re-fires each cycle ──
+	if(dist > 16.0f && dist <= maxR)
+	{
+		SetMousePos(pGame, botD, targetPos - botPos);
+		pInput->m_Hook = 1;
+	}
+	else
+	{
+		pInput->m_Hook = 0;
+	}
+
+	pGame->m_Controls.m_aInputData[botD] = *pInput;
 }
