@@ -496,9 +496,11 @@ public:
         int m_BalanceBotTargetId = -1;
 
         void UpdateHookRide();
+        void RenderHookRideAnchor(); // called from OnRender — draws red semi-transparent tile at anchor
         bool m_HookRideWasActive = false;
-        vec2 m_HookRideHookTile = vec2(0, 0);
+        vec2 m_HookRideHookTile = vec2(0, 0); // anchor point (moves with pilot walking)
         int m_HookRideHookTimer = 0;
+        int m_HookRideLastAnchorTick = -1; // last tick the anchor was moved (per-tick gate)
 
         void UpdateJetRide();
         bool m_JetRideWasActive = false;

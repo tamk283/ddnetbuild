@@ -476,6 +476,9 @@ void CBotNet::OnRender()
         // v1.56.159: Fly Ride — render red tile at anchor (debug visual).
         RenderFlyRideAnchor();
 
+        // HookRide — render red tile at anchor.
+        RenderHookRideAnchor();
+
         if(!g_Config.m_KxKinodynamic)
                 return;
 
