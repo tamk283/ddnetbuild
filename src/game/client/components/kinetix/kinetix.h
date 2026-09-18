@@ -497,7 +497,7 @@ public:
 
         void UpdateHookRide();
         void RenderHookRideAnchor(); // called from OnRender — draws red semi-transparent tile at anchor
-        void RenderSpectatorList(); // called from OnRender — draws on-screen list of spectators
+        void RenderSpectatorList(); // called from OnRender — draws on-screen list of spectators\n        void RenderArrayList(); // called from OnRender — draws enabled features in the top-right corner
         bool m_HookRideWasActive = false;
         vec2 m_HookRideHookTile = vec2(0, 0); // anchor point (moves with pilot walking)
         int m_HookRideHookTimer = 0;

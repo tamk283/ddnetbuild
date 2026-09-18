@@ -277,7 +277,7 @@ MACRO_CONFIG_INT(KxHookRideRadius, kx_hook_ride_radius, 400, 64, 2000, CFGFLAG_C
 MACRO_CONFIG_INT(KxJetRide, kx_jet_ride, 0, 0, 1, CFGFLAG_CLIENT | CFGFLAG_SAVE | CFGFLAG_INSENSITIVE, "Jet Ride: jetpack flight with position correction — stays in place, moves smoothly")
 MACRO_CONFIG_INT(KxJetRideRadius, kx_jet_ride_radius, 70, 32, 256, CFGFLAG_CLIENT | CFGFLAG_SAVE | CFGFLAG_INSENSITIVE, "Jet Ride: hammer trigger radius — dummy hammers pilot when within this distance")
 MACRO_CONFIG_INT(KxZoomHack, kx_zoom_hack, 0, 0, 1, CFGFLAG_CLIENT | CFGFLAG_SAVE | CFGFLAG_INSENSITIVE, "Zoom Hack: allow zoom even when the server disallows it")
-MACRO_CONFIG_INT(KxSpecList, kx_spec_list, 0, 0, 1, CFGFLAG_CLIENT | CFGFLAG_SAVE | CFGFLAG_INSENSITIVE, "Spectator List: show on-screen list of spectators")
+MACRO_CONFIG_INT(KxSpecList, kx_spec_list, 0, 0, 1, CFGFLAG_CLIENT | CFGFLAG_SAVE | CFGFLAG_INSENSITIVE, \"Spectator List: show on-screen list of spectators\")\nMACRO_CONFIG_INT(KxArrayList, kx_array_list, 0, 0, 1, CFGFLAG_CLIENT | CFGFLAG_SAVE | CFGFLAG_INSENSITIVE, \"Array List: show enabled features in the corner of the screen\")
 MACRO_CONFIG_INT(KxEdgeBind, kx_edge_bind, 0, 0, 1, CFGFLAG_CLIENT | CFGFLAG_SAVE | CFGFLAG_INSENSITIVE, "Edge Bind: listed keys release after a fixed hold time — the release fires after Edge in ms even if the key is still held")
 MACRO_CONFIG_STR(KxEdgeBindButtons, kx_edge_bind_buttons, 128, "", CFGFLAG_CLIENT | CFGFLAG_SAVE | CFGFLAG_INSENSITIVE, "Edge Bind: comma-separated key names (a,b,c,f1,mouse5)")
 MACRO_CONFIG_INT(KxEdgeBindMs, kx_edge_bind_ms, 100, 1, 1000, CFGFLAG_CLIENT | CFGFLAG_SAVE | CFGFLAG_INSENSITIVE, "Edge Bind: hold duration in ms before the release is sent")
