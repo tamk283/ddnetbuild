@@ -858,11 +858,45 @@ add_library(md5 EXCLUDE_FROM_ALL OBJECT ${DEP_MD5_SRC})
 
 # Lua 5.4 (bundled)
 set_src(DEP_LUA_SRC GLOB src/engine/external/lua
-  lapi.c lauxlib.c lbaselib.c lcode.c lcorolib.c lctype.c
-  ldblib.c ldebug.c ldo.c ldump.c lfunc.c lgc.c linit.c
-  liolib.c llex.c lmathlib.c lmem.c loadlib.c lobject.c
-  lopcodes.c loslib.c lparser.c lstate.c lstring.c lstrlib.c
-  ltable.c ltablib.c ltm.c lundump.c lutf8lib.c lvm.c lzio.c
+  lapi.c lapi.h
+  lauxlib.c lauxlib.h
+  lbaselib.c
+  lcode.c lcode.h
+  lcorolib.c
+  lctype.c lctype.h
+  ldblib.c
+  ldebug.c ldebug.h
+  ldo.c ldo.h
+  ldump.c
+  lfunc.c lfunc.h
+  lgc.c lgc.h
+  linit.c
+  liolib.c
+  ljumptab.h
+  llex.c llex.h
+  llimits.h
+  lmathlib.c
+  lmem.c lmem.h
+  loadlib.c
+  lobject.c lobject.h
+  lopcodes.c lopcodes.h
+  lopnames.h
+  loslib.c
+  lparser.c lparser.h
+  lprefix.h
+  lstate.c lstate.h
+  lstring.c lstring.h
+  lstrlib.c
+  ltable.c ltable.h
+  ltablib.c
+  ltm.c ltm.h
+  lua.h
+  luaconf.h
+  lualib.h
+  lundump.c lundump.h
+  lutf8lib.c
+  lvm.c lvm.h
+  lzio.c lzio.h
 )
 # Compile Lua sources as C (they are .c files but we force C standard
 # to ensure MSVC doesn't try to compile them as C++)

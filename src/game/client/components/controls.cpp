@@ -24,7 +24,7 @@
 #include <game/collision.h>
 
 // bot_control integration
-#include <game/client/components/kinetix/basic_avoid_freeze.h>
+#include <game/client/components/kinetix/avoid_freeze.h>
 #include <game/client/components/kinetix/bot_control.h>
 #include <game/client/components/kinetix/kinetix.h>
 #include <game/client/components/kinetix/tas.h>
