@@ -899,11 +899,19 @@ set_src(DEP_LUA_SRC GLOB src/engine/external/lua
   lzio.c lzio.h
 )
 # Compile Lua sources as C (they are .c files but we force C standard
-# to ensure MSVC doesn't try to compile them as C++)
-set_source_files_properties(${DEP_LUA_SRC} PROPERTIES LANGUAGE C)
+# to ensure MSVC doesn't try to compile them as C++). Only .c files get
+# the property: on headers CMake would generate standalone compile rules
+# and fail (e.g. ljumptab.h).
+set(LUA_C_SRC)
+foreach(LUA_FILE ${DEP_LUA_SRC})
+  if(LUA_FILE MATCHES "\\.c$")
+    list(APPEND LUA_C_SRC ${LUA_FILE})
+  endif()
+endforeach()
+set_source_files_properties(${LUA_C_SRC} PROPERTIES LANGUAGE C)
 # Lua needs POSIX features on Linux (popen, readline in loadlib, etc.)
 if(UNIX)
-  set_source_files_properties(${DEP_LUA_SRC} PROPERTIES COMPILE_DEFINITIONS LUA_USE_POSIX)
+  set_source_files_properties(${LUA_C_SRC} PROPERTIES COMPILE_DEFINITIONS LUA_USE_POSIX)
 endif()
 
 list(APPEND TARGETS_DEP json md5)
