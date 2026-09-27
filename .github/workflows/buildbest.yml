@@ -1,0 +1,110 @@
+name: Build BestClient v3.0
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout builder repo
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y \
+            cmake ninja-build pkg-config python3 \
+            libsdl2-dev libfreetype6-dev libnotify-dev \
+            libsqlite3-dev libpng-dev \
+            libavcodec-dev libavformat-dev libavutil-dev \
+            libswresample-dev libswscale-dev libx264-dev \
+            libcurl4-openssl-dev libogg-dev libopus-dev libopusfile-dev \
+            libglew-dev unzip tar curl git
+
+      - name: Download BestClient v3.0 ZIP
+        run: |
+          curl -L -o bestclient.zip https://github.com/BestProjectTeam/BestClient/archive/refs/tags/v3.0.zip
+          ls -lh bestclient.zip
+          rm -rf src_unpack
+          mkdir -p src_unpack
+          unzip -q bestclient.zip -d src_unpack
+          ls -la src_unpack
+          # Determine unpacked dir (BestClient-3.0)
+          SRC_DIR=$(find src_unpack -maxdepth 1 -mindepth 1 -type d | head -n 1)
+          echo "SRC_DIR=$SRC_DIR" | tee -a $GITHUB_ENV
+          echo "Unpacked to: $SRC_DIR"
+          ls -la "$SRC_DIR" | head -50
+
+      - name: Detect build system and prepare submodules
+        run: |
+          echo "SRC_DIR=$SRC_DIR"
+          ls -la "$SRC_DIR"
+          if [ -f "$SRC_DIR/CMakeLists.txt" ]; then
+            echo "BUILD_SYSTEM=cmake" | tee -a $GITHUB_ENV
+          elif [ -f "$SRC_DIR/build.gradle" ]; then
+            echo "BUILD_SYSTEM=gradle" | tee -a $GITHUB_ENV
+          elif [ -f "$SRC_DIR/Makefile" ]; then
+            echo "BUILD_SYSTEM=make" | tee -a $GITHUB_ENV
+          else
+            echo "BUILD_SYSTEM=cmake" | tee -a $GITHUB_ENV
+          fi
+          # ZIP archives do not include git submodules (ddnet-libs).
+          # Restore ddnet-libs manually if missing.
+          if [ ! -f "$SRC_DIR/ddnet-libs/sdl/CMakeLists.txt" ] && [ ! -f "$SRC_DIR/ddnet-libs/SDL2/CMakeLists.txt" ]; then
+            echo "ddnet-libs missing or incomplete, cloning..."
+            ls -la "$SRC_DIR/ddnet-libs" || true
+            rm -rf "$SRC_DIR/ddnet-libs"
+            git clone --depth 1 https://github.com/ddnet/ddnet-libs "$SRC_DIR/ddnet-libs"
+            ls -la "$SRC_DIR/ddnet-libs" | head -30
+          else
+            echo "ddnet-libs looks OK"
+          fi
+
+      - name: Configure (CMake)
+        if: env.BUILD_SYSTEM == 'cmake'
+        run: |
+          cmake --version
+          ninja --version
+          rustc --version || true
+          cargo --version || true
+          cmake -S "$SRC_DIR" -B build -G Ninja \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DDEV=OFF \
+            -DDOWNLOAD_GTEST=ON \
+            -DVULKAN=OFF \
+            -DWEBSOCKETS=OFF \
+            -DANTIBOT=OFF \
+            -DCMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE=.
+
+      - name: Build (CMake everything)
+        if: env.BUILD_SYSTEM == 'cmake'
+        run: |
+          cmake --build build --target everything -- -k 0
+          echo "=== build dir ==="
+          ls -lh build | head -100
+
+      - name: Collect artifacts
+        if: always()
+        run: |
+          ls -lh build || true
+          mkdir -p out
+          # Copy main executables if present (DDNet/BestClient naming)
+          for f in DDNet DDNet-Server BestClient BestClient-Server DDNetce DDNetce-Server mastersrv masterping; do
+            if [ -f "build/$f" ]; then cp -v "build/$f" out/; fi
+            if [ -f "build/$f.exe" ]; then cp -v "build/$f.exe" out/; fi
+          done
+          # Fallback: copy any executable at top level of build
+          find build -maxdepth 1 -type f -executable -exec cp -v {} out/ \; || true
+          ls -lh out || true
+          tar -cJf bestclient-v3.0-linux_x86_64.tar.xz -C out . || tar -czf bestclient-v3.0-linux_x86_64.tar.gz -C out .
+          ls -lh *.tar.* || true
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: bestclient-v3.0-linux_x86_64
+          path: |
+            bestclient-v3.0-linux_x86_64.tar.*
+            out/
+          if-no-files-found: error
